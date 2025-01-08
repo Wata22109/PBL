@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mealContainer.classList.add('meal-item');
             
             const button = document.createElement('button');
-            button.id = meal._id;
+            button.id = meal.id;  // _idではなくidを使用
             button.innerHTML = `
                 <img src="${meal.image}" alt="${meal.alt}" width="40%" height="auto">
                 <br>
@@ -105,7 +105,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('popupTitle').textContent = meal.alt;
         document.getElementById('popupImage').src = meal.image;
         document.getElementById('string1').textContent = `￥${meal.price}`;
-        document.getElementById('text1').innerHTML = meal.description;
+        document.getElementById('text1').textContent = meal.description;
+        
+        // アレルギー情報の表示
+        const allergiesElement = document.getElementById('allergies');
+        if (meal.allergies && meal.allergies.length > 0) {
+            allergiesElement.textContent = `アレルギー: ${meal.allergies}`;
+            allergiesElement.style.display = 'block';
+        } else {
+            allergiesElement.style.display = 'none';
+        }
 
         let quantity = 1;
         document.getElementById('quantityDisplay').textContent = quantity;
@@ -131,19 +140,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
+        document.getElementById('popup').style.display = 'block';  // この行を追加
         document.getElementById('overlay').style.display = 'block';
     }
 
-
-// カートに商品を追加
+    // カートに商品を追加する関数も修正
     function addToCart(meal, quantity) {
-        const existingItem = cart.find(item => item.id === meal._id || item.id === meal.id);
+        const existingItem = cart.find(item => item.id === meal.id);  // _idではなくidを使用
         
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {
             cart.push({
-                id: meal._id || meal.id, // _idとidの両方に対応
+                id: meal.id,
                 name: meal.alt,
                 price: meal.price,
                 quantity: quantity
