@@ -134,15 +134,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('overlay').style.display = 'block';
     }
 
-    // カートに商品を追加
+
+// カートに商品を追加
     function addToCart(meal, quantity) {
-        const existingItem = cart.find(item => item.id === meal._id);
+        const existingItem = cart.find(item => item.id === meal._id || item.id === meal.id);
         
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {
             cart.push({
-                id: meal._id,
+                id: meal._id || meal.id, // _idとidの両方に対応
                 name: meal.alt,
                 price: meal.price,
                 quantity: quantity
