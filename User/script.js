@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const studentId = document.getElementById('student-id').value;
         const password = document.getElementById('password').value;
 
+        // テスト用アカウントの場合
+        if (studentId === '123' && password === '456') {
+            loginContainer.style.display = 'none';
+            orderPage.style.display = 'block';
+            errorMessage.textContent = '';
+            loadMenu();
+            return;
+        }
+
+        // 通常のログイン処理
         try {
             const response = await fetch('http://localhost:3000/api/login', {
                 method: 'POST',
@@ -26,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (result.success) {
-                // ユーザー情報をセッションストレージに保存
                 sessionStorage.setItem('userId', result.user.id);
                 sessionStorage.setItem('studentId', result.user.studentId);
                 sessionStorage.setItem('userName', result.user.name);
@@ -34,8 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 loginContainer.style.display = 'none';
                 orderPage.style.display = 'block';
                 errorMessage.textContent = '';
-                
-                // メニューを読み込む
                 loadMenu();
             } else {
                 errorMessage.textContent = '学籍番号またはパスワードが無効です';
@@ -156,36 +163,38 @@ document.addEventListener('DOMContentLoaded', function() {
         cart.forEach(item => {
             const li = document.createElement('li');
             li.textContent = `${item.name} - ${item.quantity}個 - ￥${item.price * item.quantity}`;
-            
-            // 削除ボタンを追加
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = '削除';
-            deleteButton.classList.add('delete-item-button');
-            deleteButton.onclick = () => removeFromCart(item.id);
-            li.appendChild(deleteButton);
-            
             cartItems.appendChild(li);
             totalQuantity += item.quantity;
             totalAmount += item.price * item.quantity;
         });
 
         totalQuantityDisplay.textContent = `合計: ￥${totalAmount} (${totalQuantity}個)`;
-        document.getElementById('cartButton').textContent = `カート (${totalQuantity})`;
+        document.getElementById('cartButton').textContent = `カート (${totalQuantity}) / 決済`;
     }
 
-    // カートから商品を削除
-    function removeFromCart(itemId) {
-        cart = cart.filter(item => item.id !== itemId);
-        updateCartDisplay();
-    }
-
-    // 注文確定処理
-    async function submitOrder() {
+    // カート確定ボタンのイベントリスナー追加
+    document.getElementById('submitOrder').addEventListener('click', async () => {
+        const studentId = document.getElementById('student-id').value;
+        
         if (cart.length === 0) {
             alert('カートが空です');
             return;
         }
 
+        if (studentId === '123') {
+            // テストアカウントの場合
+            alert('注文が完了しました！');
+            cart = [];  // カートを空にする
+            updateCartDisplay();
+            document.getElementById('cart').classList.add('hidden');
+            loginContainer.style.display = 'block';
+            orderPage.style.display = 'none';
+            document.getElementById('student-id').value = '';
+            document.getElementById('password').value = '';
+            return;
+        }
+
+        // 通常の注文処理
         try {
             const userId = sessionStorage.getItem('userId');
             if (!userId) {
@@ -220,12 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Order submission error:', error);
             alert('注文に失敗しました。もう一度お試しください。');
         }
-    }
-
-    // 合計金額計算
-    function calculateTotalAmount() {
-        return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    }
+    });
 
     // カートボタンのイベントリスナー
     document.getElementById('cartButton').addEventListener('click', () => {
@@ -237,15 +241,17 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('cart').classList.add('hidden');
     });
 
-    // 注文確定ボタンのイベントリスナー
-    document.getElementById('submitOrder').addEventListener('click', submitOrder);
-
-    // ポップアップを閉じる
+    // オーバーレイクリックでポップアップを閉じる
     document.getElementById('overlay').addEventListener('click', (e) => {
         if (e.target.id === 'overlay' || e.target.id === 'closePopup') {
             document.getElementById('overlay').style.display = 'none';
         }
     });
+
+    // 合計金額計算用の関数
+    function calculateTotalAmount() {
+        return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    }
 
     // 営業時間チェック
     function checkBusinessHours() {
@@ -260,37 +266,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (hour >= 9 && hour < 14) {
                 statusText = `現在営業中です - ${openHours}`;
                 document.getElementById('businessHours').className = 'business-hours open';
-                enableOrdering(true);
             } else {
                 const nextOpen = hour < 9 ? '次の営業日は今日の9:00です。' : '次の営業日は明日の9:00です。';
                 statusText = `現在営業時間外です - ${nextOpen}`;
                 document.getElementById('businessHours').className = 'business-hours closed';
-                enableOrdering(false);
             }
         } else {
             const nextOpen = '次の営業日は月曜日の9:00です。';
             statusText = `現在営業時間外です - ${nextOpen}`;
             document.getElementById('businessHours').className = 'business-hours closed';
-            enableOrdering(false);
         }
 
         document.getElementById('businessHours').textContent = statusText;
     }
 
-    // 注文の有効/無効を切り替える
-    function enableOrdering(enable) {
-        const buttons = document.querySelectorAll('.meal-item button, #addToCart, #submitOrder');
-        buttons.forEach(button => {
-            button.disabled = !enable;
-            if (!enable) {
-                button.title = '営業時間外です';
-            } else {
-                button.title = '';
-            }
-        });
-    }
-
-    // 初期化時の処理
     checkBusinessHours();
     setInterval(checkBusinessHours, 60000); // 1分ごとに更新
 });
