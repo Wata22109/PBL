@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const addToCartButton = document.getElementById('addToCart');
         addToCartButton.onclick = () => {
             addToCart(meal, quantity);
-            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('overlay').style.display = 'block';
             updateCartDisplay();
         };
 
