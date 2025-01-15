@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
             allergiesElement.textContent = `アレルギー: ${meal.allergies}`;
             allergiesElement.style.display = 'block';
         } else {
-            allergiesElement.style.display = 'none';
+            allergiesElement.style.display = 'block';
         }
 
         let quantity = 1;
