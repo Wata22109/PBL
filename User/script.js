@@ -24,33 +24,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 通常のログイン処理
-        try {
-            const response = await fetch('http://localhost:3000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ studentId, password })
-            });
+        // try {
+        //     const response = await fetch('http://localhost:3000/api/login', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({ studentId, password })
+        //     });
 
-            const result = await response.json();
+        //     const result = await response.json();
 
-            if (result.success) {
-                sessionStorage.setItem('userId', result.user.id);
-                sessionStorage.setItem('studentId', result.user.studentId);
-                sessionStorage.setItem('userName', result.user.name);
+        //     if (result.success) {
+        //         sessionStorage.setItem('userId', result.user.id);
+        //         sessionStorage.setItem('studentId', result.user.studentId);
+        //         sessionStorage.setItem('userName', result.user.name);
 
-                loginContainer.style.display = 'none';
-                orderPage.style.display = 'block';
-                errorMessage.textContent = '';
-                loadMenu();
-            } else {
-                errorMessage.textContent = '学籍番号またはパスワードが無効です';
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            errorMessage.textContent = 'ログインに失敗しました。もう一度お試しください。';
-        }
+        //         loginContainer.style.display = 'none';
+        //         orderPage.style.display = 'block';
+        //         errorMessage.textContent = '';
+        //         loadMenu();
+        //     } else {
+        //         errorMessage.textContent = '学籍番号またはパスワードが無効です';
+        //     }
+        // } catch (error) {
+        //     console.error('Login error:', error);
+        //     errorMessage.textContent = 'ログインに失敗しました。もう一度お試しください。';
+        // }
     });
 
     // メニュー読み込み
