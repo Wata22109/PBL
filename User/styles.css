@@ -38,7 +38,7 @@ input {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #6D352C;
     color: white;
     border: none;
     padding: 10px;
@@ -47,7 +47,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #4d251e;
 }
 
 .error-message {
@@ -83,9 +83,15 @@ button:hover {
     z-index: 100;
     margin: 5px;
     cursor: pointer;
-    width: 65%;
-    height: 80%;
 }
+
+/* スマートフォン用のスタイル */
+@media (max-width: 768px) {
+    #popup {
+        width: 80%;
+        height: 80%;
+    }
+}   
 
 #overlay {
     display: none;
@@ -247,7 +253,7 @@ button:hover {
     position: fixed; /* 固定位置 */
     bottom: 10px; /* 下から10px */
     right: 10px; /* 右から10px */
-    background-color: #3498db; /* ボタンの背景色 */
+    background-color: #EFA54B; /* ボタンの背景色 */
     color: white; /* ボタンのテキスト色 */
     border: none; 
     padding: 3px 10px; /* 内側のパディングを小さく */
@@ -259,7 +265,7 @@ button:hover {
 }
 
 .fixed-cart-button:hover {
-    background-color: #2980b9; /* ホバー時の色 */
+    background-color: #DD5A0F; /* ホバー時の色 */
 }
 
 /* .section{
